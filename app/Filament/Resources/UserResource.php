@@ -25,24 +25,45 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
-                    ->dehydrated(fn($state) => filled($state))
-                    ->required(fn(string $context): bool => $context === 'create')
-                    ->maxLength(255),
-                Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name')
-                    ->preload()
-                    ->searchable()
+                Forms\Components\Section::make('User Information')  // Section for user details
+                    ->schema([
+                        Forms\Components\Grid::make(2)  // Grid for name and email fields
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Full Name')
+                                    ->required()
+                                    ->maxLength(255),
+
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Email Address')
+                                    ->email()
+                                    ->required()
+                                    ->maxLength(255),
+                            ]),
+
+                        Forms\Components\DateTimePicker::make('email_verified_at')
+                            ->label('Email Verified At')
+                            ->nullable(),
+                    ]),
+
+                Forms\Components\Section::make('Security')  // Section for password and roles
+                    ->schema([
+                        Forms\Components\TextInput::make('password')
+                            ->label('Password')
+                            ->password()
+                            ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
+                            ->dehydrated(fn($state) => filled($state))  // Dehydrate only if filled
+                            ->required(fn(string $context): bool => $context === 'create')
+                            ->maxLength(255),
+
+                        Forms\Components\Select::make('roles')
+                            ->label('User Role')
+                            ->relationship('roles', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->multiple()
+                            ->required(),
+                    ]),
             ]);
     }
 

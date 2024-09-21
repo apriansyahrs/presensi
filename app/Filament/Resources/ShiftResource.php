@@ -24,15 +24,24 @@ class ShiftResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TimePicker::make('start_time')
-                ->seconds(false)
-                    ->required(),
-                Forms\Components\TimePicker::make('end_time')
-                ->seconds(false)
-                    ->required(),
+                Forms\Components\Section::make('Shift Details') // Section for shift information
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Shift Name')
+                            ->required()
+                            ->maxLength(255),
+
+                        Forms\Components\Grid::make(2) // Grid for start and end time
+                            ->schema([
+                                Forms\Components\TimePicker::make('start_time')
+                                    ->label('Start Time')
+                                    ->required(),
+
+                                Forms\Components\TimePicker::make('end_time')
+                                    ->label('End Time')
+                                    ->required(),
+                            ]),
+                    ]),
             ]);
     }
 
