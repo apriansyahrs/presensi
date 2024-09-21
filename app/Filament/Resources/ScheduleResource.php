@@ -24,15 +24,29 @@ class ScheduleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
-                Forms\Components\Select::make('shift_id')
-                    ->relationship('shift', 'name')
-                    ->required(),
-                Forms\Components\Select::make('office_id')
-                    ->relationship('office', 'name')
-                    ->required(),
+                Forms\Components\Section::make('Schedule Details')  // Section for better structure
+                    ->schema([
+                        Forms\Components\Grid::make(3)  // Grid to arrange the fields in one line
+                            ->schema([
+                                Forms\Components\Select::make('user_id')
+                                    ->label('User')
+                                    ->relationship('user', 'name')
+                                    ->searchable()
+                                    ->required(),
+
+                                Forms\Components\Select::make('shift_id')
+                                    ->label('Shift')
+                                    ->relationship('shift', 'name')
+                                    ->searchable()
+                                    ->required(),
+
+                                Forms\Components\Select::make('office_id')
+                                    ->label('Office')
+                                    ->relationship('office', 'name')
+                                    ->searchable()
+                                    ->required(),
+                            ]),
+                    ]),
             ]);
     }
 
